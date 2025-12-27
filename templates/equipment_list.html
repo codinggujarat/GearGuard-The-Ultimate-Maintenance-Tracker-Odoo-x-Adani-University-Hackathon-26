@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Asset Inventory{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+    <div>
+        <h3 class="text-3xl font-black tracking-tighter text-[var(--text-primary)] uppercase italic">Inventory</h3>
+        {% if current_cat or search_query %}
+        <div class="mt-2 flex items-center gap-3">
+            <span
+                class="text-[10px] bg-[var(--text-primary)] text-[var(--bg-pure)] px-2 py-0.5 font-bold uppercase tracking-tighter rounded">Filtered</span>
+            <p
+                class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest flex items-center gap-2">
+                {% if current_cat %}Category: <span class="text-[var(--text-primary)]">{{ current_cat.name }}</span>{%
+                endif %}
+                {% if search_query %}Search: <span class="text-[var(--text-primary)]">"{{ search_query }}"</span>{%
+                endif %}
+            </p>
+            <a href="/equipment"
+                class="text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors border-b border-[var(--border-main)]">Clear
+                All</a>
+        </div>
+        {% endif %}
+    </div>
+    <a href="/equipment/new"
+        class="bg-[var(--text-primary)] text-[var(--bg-pure)] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:opacity-90">
+        + Add New Asset
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for eq in equipments %}
+    <div class="glass-card rounded-2xl p-8 hover:bg-[var(--bg-alt)] transition-all group border-[var(--border-main)]">
+        <div class="flex justify-between items-start mb-8">
+            <div
+                class="w-12 h-12 bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-microchip text-sm"></i>
+            </div>
+            {% if eq.is_scrapped %}
+            <span
+                class="text-[9px] font-black bg-[var(--bg-alt)] text-[var(--text-secondary)] px-3 py-1 rounded-full border border-[var(--border-main)] uppercase tracking-widest">Scrapped</span>
+            {% else %}
+            <span
+                class="text-[9px] font-black bg-[var(--text-primary)] text-[var(--bg-pure)] px-3 py-1 rounded-full uppercase tracking-widest">Active</span>
+            {% endif %}
+        </div>
+
+        <h4 class="text-xl font-bold mb-1 group-hover:tracking-tight transition-all text-[var(--text-primary)]">{{
+            eq.name }}</h4>
+        <div class="flex items-center gap-2 mb-8">
+            <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">{{
+                eq.serial_number }}</span>
+            <span class="w-1 h-1 bg-[var(--border-main)] rounded-full"></span>
+            <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter italic">{{
+                eq.department
+                }}</span>
+        </div>
+
+        <div class="flex items-center gap-3 mb-10 p-3 bg-[var(--bg-alt)] rounded-xl border border-[var(--border-main)]">
+            <i class="fas fa-map-pin text-[10px] text-[var(--text-secondary)]"></i>
+            <span class="text-[11px] font-medium text-[var(--text-secondary)] capitalize">{{ eq.location }}</span>
+        </div>
+
+        <div class="flex items-center justify-between pt-6 border-t border-[var(--border-main)]">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-[var(--bg-alt)] border border-[var(--border-main)] flex items-center justify-center text-[10px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-all cursor-help"
+                    title="{{ eq.assigned_to.name if eq.assigned_to else 'Unassigned' }}">
+                    {{ eq.assigned_to.name[:1]|upper if eq.assigned_to else '?' }}
+                </div>
+                <span
+                    class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter">Technician</span>
+            </div>
+            <a href="/equipment/{{ eq.id }}"
+                class="text-[10px] font-bold text-[var(--text-primary)] uppercase tracking-widest border-b border-[var(--text-primary)] border-opacity-0 hover:border-opacity-100 transition-all">
+                Details →
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

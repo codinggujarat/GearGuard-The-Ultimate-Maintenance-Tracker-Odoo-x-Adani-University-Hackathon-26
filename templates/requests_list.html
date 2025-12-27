@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Maintenance History{% endblock %}
+
+{% block content %}
+<div class="mb-10">
+    <a href="/equipment/{{ equipment.id }}"
+        class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-[10px] font-black uppercase tracking-widest flex items-center gap-2 mb-6 transition-all">
+        <i class="fas fa-arrow-left text-[8px]"></i> Return to Asset Profile
+    </a>
+    <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Log History // {{
+        equipment.name }}
+    </h3>
+</div>
+
+<div class="glass-card rounded-3xl overflow-hidden border-[var(--border-main)]">
+    {% if requests %}
+    <table class="w-full text-left">
+        <thead>
+            <tr
+                class="bg-[var(--bg-alt)] text-[var(--text-secondary)] text-[9px] uppercase font-black tracking-[0.2em]">
+                <th class="px-8 py-6">Incident Subject</th>
+                <th class="px-8 py-6">Class</th>
+                <th class="px-8 py-6">State</th>
+                <th class="px-8 py-6">Assigned Operator</th>
+                <th class="px-8 py-6">Timeline</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y border-[var(--border-main)] text-[11px] font-bold uppercase tracking-tight">
+            {% for req in requests %}
+            <tr class="hover:bg-[var(--bg-alt)] transition-all">
+                <td class="px-8 py-6 text-[var(--text-primary)]">{{ req.subject }}</td>
+                <td class="px-8 py-6">
+                    <span
+                        class="{{ 'text-red-500' if req.type == 'Corrective' else 'text-[var(--text-secondary)] italic' }}">
+                        {{ req.type }}
+                    </span>
+                </td>
+                <td class="px-8 py-6">
+                    <span
+                        class="px-3 py-1 rounded-full text-[8px] font-black border 
+                        {% if req.status == 'New' %} border-[var(--text-primary)] text-[var(--text-primary)]
+                        {% elif req.status == 'In Progress' %} border-[var(--text-secondary)] text-[var(--text-secondary)]
+                        {% else %} border-[var(--border-main)] text-[var(--text-primary)] bg-[var(--bg-alt)] {% endif %} uppercase tracking-widest">
+                        {{ req.status }}
+                    </span>
+                </td>
+                <td class="px-8 py-6 text-[var(--text-secondary)] italic">{{ req.assigned_to.name if req.assigned_to
+                    else 'UNASSIGNED'
+                    }}</td>
+                <td class="px-8 py-6 text-[var(--text-secondary)] font-black italic">{{
+                    req.scheduled_date.strftime('%Y-%m-%d') if
+                    req.scheduled_date else '---' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="text-center py-24 bg-[var(--bg-pure)]">
+        <div
+            class="w-20 h-20 bg-[var(--text-primary)]/5 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-[var(--border-main)] rotate-12">
+            <i class="fas fa-terminal text-3xl text-[var(--text-secondary)]"></i>
+        </div>
+        <h4 class="text-lg font-black text-[var(--text-primary)] uppercase tracking-tighter">Null Dataset</h4>
+        <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-2">No historical
+            maintenance records
+            found for this terminal.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Maintenance Teams{% endblock %}
+
+{% block content %}
+<div class="mb-12">
+    <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Maintenance Units</h3>
+    <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">Specialized Engineering
+        Teams</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for team in teams %}
+    <div
+        class="glass-card rounded-3xl p-10 border-[var(--border-main)] group hover:border-[var(--text-primary)] transition-all">
+        <div class="flex justify-between items-start mb-10">
+            <div>
+                <h4 class="text-2xl font-black italic tracking-tighter text-[var(--text-primary)] uppercase">{{
+                    team.name }}</h4>
+                <p class="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em] mt-2">Division
+                    Unit</p>
+            </div>
+            <div
+                class="w-12 h-12 bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-users-cog text-sm"></i>
+            </div>
+        </div>
+
+        <div class="space-y-6 mb-12">
+            <h5
+                class="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest border-b border-[var(--border-main)] pb-2">
+                Technical Roster</h5>
+            {% for member in team.members %}
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-8 h-8 rounded bg-[var(--bg-alt)] border border-[var(--border-main)] flex items-center justify-center text-[10px] font-black text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] group-hover:border-[var(--text-primary)] transition-all italic">
+                    {{ member.name[:1]|upper }}
+                </div>
+                <div>
+                    <p class="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-tight">{{ member.name
+                        }}</p>
+                    <p class="text-[9px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter italic">{{
+                        member.role }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pt-8 border-t border-[var(--border-main)] flex justify-between items-center">
+            <span class="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-widest">{{
+                team.equipments|length }}
+                Assets Assigned</span>
+            <a href="/teams/{{ team.id }}"
+                class="text-[var(--text-primary)] hover:text-[var(--text-secondary)] text-[10px] font-black transition-colors uppercase tracking-widest italic border-b border-[var(--text-primary)]">Manage
+                →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

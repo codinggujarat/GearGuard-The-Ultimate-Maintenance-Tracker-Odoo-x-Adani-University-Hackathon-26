@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Asset Categories{% endblock %}
+
+{% block content %}
+<div class="mb-12">
+    <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Classifications</h3>
+    <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">Asset Category
+        Management</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for cat in categories %}
+    <div class="glass-card rounded-3xl p-10 hover:bg-[var(--bg-alt)] transition-all border-[var(--border-main)] group">
+        <div class="flex items-center gap-6 mb-8">
+            <div
+                class="w-16 h-16 bg-[var(--bg-alt)] rounded-2xl flex items-center justify-center border border-[var(--border-main)] group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-microchip text-xl"></i>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold text-[var(--text-primary)] group-hover:tracking-tight transition-all">{{
+                    cat.name }}</h4>
+                <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">{{
+                    cat.equipments|length }}
+                    Assets Registered</span>
+            </div>
+        </div>
+
+        <p class="text-[11px] font-medium text-[var(--text-secondary)] leading-relaxed mb-10 h-10 overflow-hidden">{{
+            cat.description
+            }}</p>
+
+        <div class="pt-8 border-t border-[var(--border-main)] flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-[var(--text-primary)]"></div>
+                <span
+                    class="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em]">Operational</span>
+            </div>
+            <a href="/equipment?category_id={{ cat.id }}"
+                class="text-[var(--text-primary)] hover:text-[var(--text-secondary)] text-[10px] font-black transition-colors uppercase tracking-widest border-b border-[var(--text-primary)]">Explore
+                →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

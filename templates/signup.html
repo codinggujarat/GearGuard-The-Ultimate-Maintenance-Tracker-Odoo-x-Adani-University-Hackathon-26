@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration | GearGuard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-pure: #000000;
+            --bg-card: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #71717a;
+            --border-main: rgba(255, 255, 255, 0.05);
+            --bg-alt: #0d0d0d;
+        }
+
+        :root.light-mode {
+            --bg-pure: #ffffff;
+            --bg-card: #f8fafc;
+            --text-primary: #000000;
+            --text-secondary: #64748b;
+            --border-main: rgba(0, 0, 0, 0.05);
+            --bg-alt: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-pure);
+            color: var(--text-primary);
+        }
+
+        .pure-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-main);
+        }
+
+        input {
+            background-color: var(--bg-alt) !important;
+            border-color: var(--border-main) !important;
+            color: var(--text-primary) !important;
+        }
+
+        input:focus {
+            border-color: var(--text-primary) !important;
+        }
+    </style>
+</head>
+
+<body
+    class="h-full flex flex-col items-center justify-center p-6 text-[var(--text-primary)] overflow-hidden transition-colors duration-300">
+    <div class="fixed top-8 right-8 z-50">
+        <button id="themeToggle"
+            class="w-10 h-10 rounded-full border border-[var(--border-main)] flex items-center justify-center hover:bg-[var(--bg-alt)] transition-all">
+            <i class="fas fa-moon text-xs" id="themeIcon"></i>
+        </button>
+    </div>
+
+    <div class="fixed inset-0 pointer-events-none">
+        <div
+            class="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 w-[600px] h-[600px] bg-[var(--text-primary)] opacity-[0.015] rounded-full blur-[100px]">
+        </div>
+    </div>
+
+    <div class="w-full max-w-sm relative z-10">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-black tracking-tighter uppercase italic text-[var(--text-primary)]">Account Setup
+            </h1>
+            <p class="text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Operator
+                Enrollment</p>
+        </div>
+
+        <div class="pure-card p-10 rounded-3xl">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="text-red-500 text-[10px] font-bold uppercase tracking-widest text-center mb-6">{{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form action="/signup" method="POST" class="space-y-5">
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Legal
+                        Name</label>
+                    <input type="text" name="name" required placeholder="FULL NAME"
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-4 py-4 text-xs font-bold uppercase tracking-widest outline-none transition-all text-[var(--text-primary)]">
+                </div>
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Operator
+                        ID</label>
+                    <input type="text" name="username" required placeholder="USER ID"
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-4 py-4 text-xs font-bold uppercase tracking-widest outline-none transition-all text-[var(--text-primary)]">
+                </div>
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Security
+                        Key</label>
+                    <input type="password" name="password" required placeholder="••••••••"
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-4 py-4 text-xs outline-none transition-all text-[var(--text-primary)]">
+                </div>
+                <button type="submit"
+                    class="w-full bg-[var(--text-primary)] hover:opacity-90 text-[var(--bg-pure)] font-black py-4 rounded-xl text-xs uppercase tracking-[0.2em] transition-all transform active:scale-95 mt-4">
+                    Register Operator
+                </button>
+            </form>
+
+            <div class="mt-10 text-center">
+                <a href="/login"
+                    class="text-[10px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] uppercase tracking-widest border-b border-transparent hover:border-[var(--text-primary)] transition-all pb-1">Return
+                    to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const root = document.documentElement;
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        function setTheme(theme) {
+            if (theme === 'light') {
+                root.classList.add('light-mode');
+                themeIcon.className = 'fas fa-sun text-xs';
+                localStorage.setItem('theme', 'light');
+            } else {
+                root.classList.remove('light-mode');
+                themeIcon.className = 'fas fa-moon text-xs';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const isLight = root.classList.contains('light-mode');
+            setTheme(isLight ? 'dark' : 'light');
+        });
+    </script>
+</body>
+
+</html>

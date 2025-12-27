@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block title %}Operations Overview{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <a href="/equipment" class="glass-card p-6 rounded-2xl hover:bg-[var(--bg-alt)] transition-all group">
+        <div class="flex items-center justify-between mb-6">
+            <div
+                class="w-10 h-10 bg-[var(--bg-alt)] text-[var(--text-primary)] border border-[var(--border-main)] rounded-lg flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-layer-group text-sm"></i>
+            </div>
+            <span class="text-[10px] font-bold tracking-widest text-[var(--text-secondary)] uppercase">Assets</span>
+        </div>
+        <h3 class="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-tight">Equipment Tracking</h3>
+        <p class="text-4xl font-light mt-2 text-[var(--text-primary)]">{{ stats.total_equipment }}</p>
+    </a>
+
+    <a href="/kanban" class="glass-card p-6 rounded-2xl hover:bg-[var(--bg-alt)] transition-all group">
+        <div class="flex items-center justify-between mb-6">
+            <div
+                class="w-10 h-10 bg-[var(--bg-alt)] text-[var(--text-primary)] border border-[var(--border-main)] rounded-lg flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-clipboard-list text-sm"></i>
+            </div>
+            <span class="text-[10px] font-bold tracking-widest text-[var(--text-secondary)] uppercase">Requests</span>
+        </div>
+        <h3 class="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-tight">Maintenance Requests</h3>
+        <p class="text-4xl font-light mt-2 text-[var(--text-primary)]">{{ stats.open_requests }}</p>
+    </a>
+
+    <a href="/teams" class="glass-card p-6 rounded-2xl hover:bg-[var(--bg-alt)] transition-all group">
+        <div class="flex items-center justify-between mb-6">
+            <div
+                class="w-10 h-10 bg-[var(--bg-alt)] text-[var(--text-primary)] border border-[var(--border-main)] rounded-lg flex items-center justify-center group-hover:bg-[var(--text-primary)] group-hover:text-[var(--bg-pure)] transition-all">
+                <i class="fas fa-users text-sm"></i>
+            </div>
+            <span class="text-[10px] font-bold tracking-widest text-[var(--text-secondary)] uppercase">Active</span>
+        </div>
+        <h3 class="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-tight">Specialized Teams</h3>
+        <p class="text-4xl font-light mt-2 text-[var(--text-primary)]">{{ teams|length }}</p>
+    </a>
+
+    <div class="glass-card p-6 rounded-2xl">
+        <div class="flex items-center justify-between mb-6">
+            <div
+                class="w-10 h-10 bg-[var(--bg-alt)] text-[var(--text-primary)] border border-[var(--border-main)] rounded-lg flex items-center justify-center">
+                <i class="fas fa-check-double text-sm"></i>
+            </div>
+            <span
+                class="text-[10px] font-bold tracking-widest text-[var(--text-secondary)] uppercase">Performance</span>
+        </div>
+        <h3 class="text-[var(--text-secondary)] text-xs font-bold uppercase tracking-tight">Resolution Success</h3>
+        <p class="text-4xl font-light mt-2 text-[var(--text-primary)]">{{ stats.resolution_rate }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <!-- Recent Requests -->
+    <div class="xl:col-span-2 glass-card rounded-2xl overflow-hidden">
+        <div class="p-6 border-b border-[var(--border-main)] flex items-center justify-between">
+            <h3 class="font-bold text-sm uppercase tracking-widest text-[var(--text-primary)]">Active Requests</h3>
+            <a href="/kanban"
+                class="text-[10px] font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] uppercase tracking-tighter transition-colors">View
+                Board →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr
+                        class="bg-[var(--bg-alt)] text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-widest">
+                        <th class="px-6 py-4">Request Details</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4">Technician</th>
+                        <th class="px-6 py-4 text-center">Date</th>
+                        <th class="px-6 py-4 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y border-[var(--border-main)] text-xs">
+                    {% for req in recent_requests %}
+                    <tr class="hover:bg-[var(--bg-alt)] transition-colors group/row">
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-[var(--text-primary)] mb-0.5">{{ req.subject }}</div>
+                            <div class="text-[10px] text-[var(--text-secondary)]">{{ req.type }} • {{
+                                req.equipment.serial_number }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span
+                                class="inline-block px-2 py-0.5 rounded-full border border-[var(--border-main)] text-[9px] font-bold uppercase tracking-tight text-[var(--text-primary)] bg-[var(--bg-alt)]">
+                                {{ req.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-6 h-6 rounded bg-[var(--bg-alt)] border border-[var(--border-main)] flex items-center justify-center text-[9px] font-bold text-[var(--text-primary)] uppercase">
+                                    {{ req.assigned_to.name[:1] if req.assigned_to else '?' }}
+                                </div>
+                                <span class="text-[var(--text-secondary)] font-medium">{{ req.assigned_to.name if
+                                    req.assigned_to else
+                                    'Unassigned' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-[var(--text-secondary)] text-center">{{ req.created_at.strftime('%b
+                            %d') }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="/kanban"
+                                class="inline-flex w-7 h-7 items-center justify-center rounded border border-[var(--border-main)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-all">
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Teams Overview -->
+    <div class="glass-card rounded-2xl p-6 flex flex-col">
+        <h3 class="font-bold text-sm uppercase tracking-widest text-[var(--text-primary)] mb-8">Workload Distribution
+        </h3>
+        <div class="flex-1 flex flex-col justify-center min-h-[250px]">
+            <canvas id="teamsChart"></canvas>
+        </div>
+        <div class="mt-8 space-y-3">
+            {% for team in teams %}
+            <div
+                class="p-3 bg-[var(--bg-alt)] rounded-xl border border-[var(--border-main)] flex justify-between items-center group hover:border-[var(--text-primary)] transition-all">
+                <span
+                    class="text-xs font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{{
+                    team.name
+                    }}</span>
+                <span
+                    class="text-[10px] font-bold bg-[var(--text-primary)] text-[var(--bg-pure)] px-2 py-0.5 rounded">{{
+                    team.equipments|length
+                    }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let myChart;
+
+    function getThemeColors() {
+        const isLight = document.documentElement.classList.contains('light-mode');
+        return {
+            backgrounds: isLight ? ['#0f172a', '#64748b', '#94a3b8', '#e2e8f0'] : ['#ffffff', '#a1a1aa', '#3f3f46', '#18181b'],
+            text: isLight ? '#64748b' : '#71717a',
+            border: getComputedStyle(document.documentElement).getPropertyValue('--bg-pure').trim(),
+            tooltipBg: isLight ? '#ffffff' : '#0a0a0a',
+            tooltipText: isLight ? '#000000' : '#ffffff',
+            tooltipBorder: isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'
+        };
+    }
+
+    async function loadChart() {
+        const resp = await fetch('/api/analytics/teams');
+        const data = await resp.json();
+        const colors = getThemeColors();
+
+        const ctx = document.getElementById('teamsChart');
+
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.counts,
+                    backgroundColor: colors.backgrounds,
+                    borderColor: colors.border,
+                    borderWidth: 2,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: colors.text,
+                            padding: 20,
+                            font: { family: 'Outfit', size: 10, weight: '600' },
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: colors.tooltipBg,
+                        titleColor: colors.tooltipText,
+                        bodyColor: colors.tooltipText,
+                        titleFont: { size: 12, family: 'Outfit' },
+                        bodyFont: { size: 12, family: 'Outfit' },
+                        borderColor: colors.tooltipBorder,
+                        borderWidth: 1
+                    }
+                },
+                cutout: '80%'
+            }
+        });
+    }
+
+    loadChart();
+
+    // Re-render chart when theme changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                loadChart();
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+</script>
+{% endblock %}

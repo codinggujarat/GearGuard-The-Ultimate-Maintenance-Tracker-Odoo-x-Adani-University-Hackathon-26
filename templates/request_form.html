@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Maintenance Request{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="glass-card rounded-3xl p-10 border-[var(--border-main)]">
+        <div class="mb-10">
+            <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Create Ticket
+            </h3>
+            <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">Issue
+                Registration Portal</p>
+        </div>
+
+        <form action="/request/new" method="POST" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="md:col-span-2">
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Asset
+                        Identification</label>
+                    <select name="equipment_id" id="equipment-select" required
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-xs font-bold uppercase tracking-widest focus:border-[var(--text-primary)] transition-all outline-none appearance-none cursor-pointer">
+                        <option value="" class="bg-[var(--bg-pure)]">-- Select Device --</option>
+                        {% for eq in equipments %}
+                        <option value="{{ eq.id }}" class="bg-[var(--bg-pure)]">{{ eq.name }} [{{ eq.serial_number }}]
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Subject
+                        /
+                        Issue Description</label>
+                    <input type="text" name="subject" placeholder="E.G., SYSTEM MALFUNCTION, CALIBRATION REQUIRED"
+                        required
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-xs font-bold uppercase tracking-widest focus:border-[var(--text-primary)] outline-none">
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Request
+                        Classification</label>
+                    <select name="type"
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-xs font-bold uppercase tracking-widest focus:border-[var(--text-primary)] transition-all outline-none appearance-none cursor-pointer">
+                        <option value="Corrective" class="bg-[var(--bg-pure)]">Corrective (Breakdown)</option>
+                        <option value="Preventive" class="bg-[var(--bg-pure)]">Preventive (Routine)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Target
+                        Completion Date</label>
+                    <input type="date" name="scheduled_date"
+                        class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-5 py-4 text-[var(--text-primary)] text-xs font-bold uppercase tracking-widest focus:border-[var(--text-primary)] outline-none">
+                </div>
+            </div>
+
+            <!-- Auto-fill preview block -->
+            <div id="auto-fill-info" class="hidden">
+                <div class="p-6 bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-2xl">
+                    <p class="text-[9px] font-black text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-4">System
+                        Linkage Data
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-[10px] font-bold uppercase tracking-tighter">
+                        <div>
+                            <span class="text-[var(--text-secondary)] block mb-1">Department</span>
+                            <span id="info-dept" class="text-[var(--text-primary)]">...</span>
+                        </div>
+                        <div>
+                            <span class="text-[var(--text-secondary)] block mb-1">Maintenance Team</span>
+                            <span id="info-team" class="text-[var(--text-primary)]">...</span>
+                        </div>
+                        <div>
+                            <span class="text-[var(--text-secondary)] block mb-1">Device Class</span>
+                            <span id="info-cat" class="text-[var(--text-primary)]">...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-6">
+                <button type="submit"
+                    class="bg-[var(--text-primary)] hover:opacity-90 text-[var(--bg-pure)] font-black px-10 py-4 rounded-xl text-xs uppercase tracking-[0.2em] transition-all transform active:scale-95 shadow-2xl">
+                    Authorize Ticket Creation
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const eqSelect = document.getElementById('equipment-select');
+    const infoBlock = document.getElementById('auto-fill-info');
+
+    eqSelect.addEventListener('change', async (e) => {
+        const eqId = e.target.value;
+        if (!eqId) {
+            infoBlock.classList.add('hidden');
+            return;
+        }
+
+        infoBlock.classList.remove('hidden');
+        try {
+            const resp = await fetch(`/api/equipment/${eqId}`);
+            const data = await resp.json();
+
+            document.getElementById('info-dept').innerText = data.department;
+            document.getElementById('info-team').innerText = data.team_name;
+            document.getElementById('info-cat').innerText = data.category_name;
+        } catch (err) {
+            console.error(err);
+        }
+    });
+</script>
+{% endblock %}

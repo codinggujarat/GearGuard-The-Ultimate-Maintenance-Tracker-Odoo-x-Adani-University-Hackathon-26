@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Maintenance Board{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-10">
+    <div>
+        <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Workflows</h3>
+        <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">Maintenance Kanban
+        </p>
+    </div>
+    <a href="/request/new"
+        class="bg-[var(--text-primary)] text-[var(--bg-pure)] px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all hover:opacity-90">
+        + Create Ticket
+    </a>
+</div>
+
+<div class="flex gap-8 h-full overflow-x-auto pb-8 scrollbar-hide">
+    {% for stage, items in stages.items() %}
+    <div class="flex-shrink-0 w-80 flex flex-col">
+        <div class="flex items-center justify-between mb-4 px-1">
+            <h4 class="font-black text-[var(--text-secondary)] uppercase text-[10px] tracking-widest">{{ stage }}</h4>
+            <span
+                class="text-[var(--text-primary)] text-[10px] font-bold border border-[var(--border-main)] px-2 py-0.5 rounded-full bg-[var(--bg-alt)]">{{
+                items|length }}</span>
+        </div>
+
+        <div id="{{ stage | replace(' ', '-') }}"
+            class="kanban-column flex-1 min-h-[600px] space-y-4 p-3 bg-[var(--bg-alt)]/30 rounded-2xl border border-[var(--border-main)]"
+            data-stage="{{ stage }}">
+            {% for req in items %}
+            <div class="bg-[var(--bg-card)] p-6 rounded-2xl cursor-grab active:cursor-grabbing hover:bg-[var(--bg-alt)] border border-[var(--border-main)] hover:border-[var(--text-primary)] transition-all group relative z-10"
+                data-id="{{ req.id }}">
+                <div class="flex justify-between items-center mb-6">
+                    <span
+                        class="text-[8px] font-black tracking-widest uppercase px-2 py-0.5 rounded {{ 'bg-red-500 text-white' if req.type == 'Corrective' else 'bg-[var(--bg-alt)] text-[var(--text-secondary)]' }}">
+                        {{ req.type }}
+                    </span>
+                    <div class="flex gap-1">
+                        <span class="w-1 h-1 bg-[var(--border-main)] rounded-full"></span>
+                        <span class="w-1 h-1 bg-[var(--border-main)] rounded-full"></span>
+                    </div>
+                </div>
+
+                <h5 class="text-sm font-bold text-[var(--text-primary)] mb-1 group-hover:tracking-tight transition-all">
+                    {{ req.subject
+                    }}</h5>
+                <p class="text-[10px] font-bold text-[var(--text-secondary)] mb-6 uppercase tracking-tighter">{{
+                    req.equipment.name }}
+                </p>
+
+                <div class="flex items-center justify-between pt-4 border-t border-[var(--border-main)]">
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-6 h-6 rounded bg-[var(--text-primary)] text-[var(--bg-pure)] flex items-center justify-center text-[9px] font-black italic">
+                            {{ req.assigned_to.name[:1]|upper if req.assigned_to else '?' }}
+                        </div>
+                        <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-tighter">{{
+                            req.assigned_to.name if req.assigned_to else 'Unassigned' }}</span>
+                    </div>
+                    {% if req.is_overdue %}
+                    <span class="text-[8px] font-bold text-red-500 uppercase tracking-widest">Overdue</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelectorAll('.kanban-column').forEach(column => {
+        new Sortable(column, {
+            group: 'kanban',
+            animation: 200,
+            ghostClass: 'opacity-10',
+            dragClass: 'scale-95',
+            onEnd: async function (evt) {
+                const id = evt.item.dataset.id;
+                const newStatus = evt.to.dataset.stage;
+
+                await fetch(`/api/request/${id}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

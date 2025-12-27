@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Master Schedule{% endblock %}
+
+{% block head %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<style>
+    .fc {
+        --fc-border-color: var(--border-main);
+        --fc-page-bg-color: var(--bg-pure);
+        --fc-neutral-bg-color: var(--bg-sidebar);
+        --fc-list-event-hover-bg-color: var(--bg-alt);
+        --fc-today-bg-color: var(--bg-alt);
+    }
+
+    .fc-event {
+        background: var(--text-primary) !important;
+        color: var(--bg-pure) !important;
+        border: none !important;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 9px !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+    }
+
+    .fc-toolbar-title {
+        color: var(--text-primary) !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+        letter-spacing: -0.05em !important;
+        font-size: 1.5rem !important;
+    }
+
+    .fc-button {
+        background: var(--bg-pure) !important;
+        border: 1px solid var(--border-main) !important;
+        color: var(--text-primary) !important;
+        text-transform: uppercase !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+    }
+
+    .fc-button:hover {
+        background: var(--text-primary) !important;
+        color: var(--bg-pure) !important;
+    }
+
+    .fc-button-active {
+        background: var(--text-primary) !important;
+        color: var(--bg-pure) !important;
+    }
+
+    .fc-day-other {
+        background: var(--bg-pure);
+        opacity: 0.5;
+    }
+
+    .fc-col-header-cell {
+        padding: 12px 0 !important;
+        background: var(--bg-sidebar);
+    }
+
+    .fc-col-header-cell-cushion {
+        color: var(--text-secondary) !important;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-10 flex justify-between items-center">
+    <div>
+        <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Master Schedule
+        </h3>
+        <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">All Maintenance
+            Activity</p>
+    </div>
+</div>
+
+<div class="glass-card p-10 rounded-3xl h-[calc(100vh-250px)]">
+    <div id='calendar-container' class="h-full"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar-container');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            themeSystem: 'standard',
+            events: '/api/events',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            dateClick: function (info) {
+                window.location.href = `/request/new?date=${info.dateStr}&type=Preventive`;
+            }
+        });
+        calendar.render();
+
+        // Real-time updates: Refetch events every 10 seconds
+        setInterval(() => {
+            calendar.refetchEvents();
+        }, 10000);
+    });
+</script>
+{% endblock %}
