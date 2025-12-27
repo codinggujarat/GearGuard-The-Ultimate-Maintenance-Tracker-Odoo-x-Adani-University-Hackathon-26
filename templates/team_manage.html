@@ -76,6 +76,46 @@
                     </button>
                 </div>
             </form>
+
+            <!-- Danger Zone -->
+            <div class="mt-12 pt-8 border-t border-[var(--border-main)]">
+                <h5 class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-4">Danger Zone</h5>
+                <p class="text-[10px] font-bold text-[var(--text-secondary)] mb-4">Dissolving this unit will unassign
+                    all current members and assets. This action cannot be undone.</p>
+                <button onclick="document.getElementById('delete-modal').classList.remove('hidden')"
+                    class="border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] transition-all">
+                    Dissolve Unit
+                </button>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div id="delete-modal"
+            class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="glass-card w-full max-w-sm p-8 rounded-3xl border border-red-500/30 relative text-center">
+                <div
+                    class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-red-500">
+                    <i class="fas fa-exclamation-triangle text-xl"></i>
+                </div>
+
+                <h4 class="text-xl font-black uppercase italic tracking-tighter text-[var(--text-primary)] mb-2">Confirm
+                    Dissolution</h4>
+                <p class="text-[10px] font-bold text-[var(--text-secondary)] mb-8">Are you sure you want to delete <span
+                        class="text-[var(--text-primary)]">{{ team.name }}</span>? All members will be unassigned.</p>
+
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('delete-modal').classList.add('hidden')"
+                        class="flex-1 bg-[var(--bg-alt)] text-[var(--text-primary)] py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:opacity-80 transition-all">
+                        Cancel
+                    </button>
+                    <form action="/teams/{{ team.id }}/delete" method="POST" class="flex-1">
+                        <button type="submit"
+                            class="w-full bg-red-500 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest hover:opacity-90 transition-all">
+                            Confirm
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Linked Assets -->

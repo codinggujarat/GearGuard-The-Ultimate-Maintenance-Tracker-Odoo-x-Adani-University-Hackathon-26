@@ -319,6 +319,16 @@ def teams_list():
     teams = Team.query.all()
     return render_template('teams.html', teams=teams)
 
+@app.route('/teams/new', methods=['POST'])
+@login_required
+def new_team():
+    name = request.form.get('name')
+    if name:
+        new_team = Team(name=name)
+        db.session.add(new_team)
+        db.session.commit()
+    return redirect(url_for('teams_list'))
+
 @app.route('/teams/<int:id>')
 @login_required
 def team_manage(id):
@@ -328,26 +338,43 @@ def team_manage(id):
 
 @app.route('/teams/<int:id>/update', methods=['POST'])
 @login_required
-def team_update(id):
+def update_team(id):
     team = Team.query.get_or_404(id)
     team.name = request.form.get('name')
     
     # Update members
     member_ids = request.form.getlist('members')
-    # First clear existing members who are NOT in the new list (simplified)
+    
+    # Reset all current members
     for member in team.members:
-        if str(member.id) not in member_ids:
-            member.team_id = None
-            
-    # Add new members
+        member.team_id = None
+        
+    # Set new members
     for m_id in member_ids:
         user = User.query.get(m_id)
         if user:
             user.team_id = team.id
             
     db.session.commit()
-    flash(f'Team {team.name} updated successfully')
     return redirect(url_for('team_manage', id=id))
+
+@app.route('/teams/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_team(id):
+    team = Team.query.get_or_404(id)
+    
+    # Unassign members
+    for member in team.members:
+        member.team_id = None
+        
+    # Unassign equipment
+    for eq in team.equipments:
+        eq.team_id = None
+        
+    db.session.delete(team)
+    db.session.commit()
+    flash(f'Unit {team.name} has been dissolved.', 'success')
+    return redirect(url_for('teams_list'))
 
 # Category Route
 @app.route('/categories')

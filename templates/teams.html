@@ -7,6 +7,41 @@
     <h3 class="text-3xl font-black uppercase tracking-tighter italic text-[var(--text-primary)]">Maintenance Units</h3>
     <p class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mt-1">Specialized Engineering
         Teams</p>
+
+    <!-- Create Team Toggle -->
+    <button onclick="document.getElementById('create-team-modal').classList.remove('hidden')"
+        class="mt-6 bg-[var(--text-primary)] text-[var(--bg-pure)] px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-all">
+        + Create Unit
+    </button>
+</div>
+
+<!-- Create Team Modal -->
+<div id="create-team-modal"
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md p-8 rounded-3xl border-[var(--border-main)] relative">
+        <button onclick="document.getElementById('create-team-modal').classList.add('hidden')"
+            class="absolute top-4 right-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h4 class="text-xl font-black uppercase italic tracking-tighter text-[var(--text-primary)] mb-6">Initialize New
+            Unit</h4>
+
+        <form action="/teams/new" method="POST" class="space-y-6">
+            <div>
+                <label
+                    class="block text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest mb-3">Unit
+                    Designation</label>
+                <input type="text" name="name" placeholder="E.G. ROBOTICS DIVISION" required
+                    class="w-full bg-[var(--bg-alt)] border border-[var(--border-main)] rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-widest text-[var(--text-primary)] outline-none focus:border-[var(--text-primary)] transition-all">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-[var(--text-primary)] text-[var(--bg-pure)] py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:opacity-90 transition-all">
+                Authorize Creation
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

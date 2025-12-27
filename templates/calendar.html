@@ -14,8 +14,7 @@
     }
 
     .fc-event {
-        background: var(--text-primary) !important;
-        color: var(--bg-pure) !important;
+        color: #ffffff !important;
         border: none !important;
         font-weight: 800;
         text-transform: uppercase;
@@ -33,9 +32,9 @@
     }
 
     .fc-button {
-        background: var(--bg-pure) !important;
+        background: var(--logo-bg) !important;
         border: 1px solid var(--border-main) !important;
-        color: var(--text-primary) !important;
+        color: var(--logo-text) !important;
         text-transform: uppercase !important;
         font-size: 10px !important;
         font-weight: 800 !important;
@@ -44,13 +43,13 @@
     }
 
     .fc-button:hover {
-        background: var(--text-primary) !important;
-        color: var(--bg-pure) !important;
+        background: var(--logo-text) !important;
+        color: var(--logo-bg) !important;
     }
 
     .fc-button-active {
-        background: var(--text-primary) !important;
-        color: var(--bg-pure) !important;
+        background: var(--logo-text) !important;
+        color: var(--logo-bg) !important;
     }
 
     .fc-day-other {
@@ -69,6 +68,30 @@
         font-size: 10px;
         font-weight: 900;
         letter-spacing: 0.1em;
+    }
+
+    /* Fix Popover (More Events) Contrast */
+    .fc-popover {
+        background-color: var(--bg-card) !important;
+        border: 1px solid var(--border-main) !important;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .fc-popover-title {
+        color: var(--text-primary) !important;
+        font-weight: 900 !important;
+    }
+
+    .fc-popover-body {
+        background-color: var(--bg-card) !important;
+    }
+
+    .fc-list-day-cushion {
+        background-color: var(--bg-alt) !important;
+    }
+
+    .fc-list-event:hover td {
+        background-color: var(--bg-alt) !important;
     }
 </style>
 {% endblock %}

@@ -1,6 +1,6 @@
 # GearGuard: The Ultimate Maintenance Tracker 🛠️
 
-A modern, robust, and intelligent Maintenance Management System designed to bridge the gap between industrial assets and technical teams. Built for the **CodingGujarat** hackathon.
+A modern, robust, and intelligent Maintenance Management System designed to bridge the gap between industrial assets and technical teams. Built for the **codingGujarat** hackathon.
 
 ---
 
@@ -91,4 +91,4 @@ The heartbeat of the module, managing real-time repair jobs.
 4. **Login**: Use `admin` / `password` (default) or create a new account via Signup.
 
 ---
-*Developed with ❤️ by Team **CodingGujarat** for the 2025 Hackathon.*
+*Developed with ❤️ by Team **codingGujarat** for the 2025 Hackathon.*
